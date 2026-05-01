@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salt Lake City Garden Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --sage:#5a7a42;
+  --sage-light:#8aaa60;
+  --sage-pale:#e8f0d8;
+  --rose:#c07880;
+  --gold:#9a7838;
+  --parchment:#f8f3e4;
+  --cream:#fffef6;
+  --text:#3a2c1e;
+  --text-dim:#8a7458;
+  --border:#c8d8a8;
+}
+
+body{
+  font-family:'Nunito',sans-serif;
+  background:url('bg.svg') center/cover fixed, var(--parchment);
+  min-height:100vh;
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ── BACKGROUND OVERLAY (readability over bg.svg) ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+  background:rgba(248,243,225,0.56);
+}
+
+/* ── BOTANICAL CORNERS ───────────────────────────── */
+.corner{position:fixed;z-index:3;pointer-events:none;opacity:0.82;}
+.corner-tl{top:-8px;left:-8px;}
+.corner-tr{top:-8px;right:-8px;transform:scaleX(-1);}
+.corner-bl{bottom:-8px;left:-8px;transform:scaleY(-1);}
+.corner-br{bottom:-8px;right:-8px;transform:scale(-1,-1);}
+
+/* ── SPARKLE LAYER ───────────────────────────────── */
+.sparkle-layer{position:fixed;inset:0;pointer-events:none;z-index:6;}
+.sp{
+  position:absolute;pointer-events:none;
+  opacity:0;animation:sp-pop 2.8s ease-in-out forwards;
+}
+@keyframes sp-pop{
+  0%  {opacity:0;transform:scale(0.3) translateY(0);}
+  35% {opacity:0.9;transform:scale(1.1) translateY(-5px);}
+  70% {opacity:0.6;transform:scale(1) translateY(-10px);}
+  100%{opacity:0;transform:scale(0.8) translateY(-20px);}
+}
+
+/* ── CREATURE LAYER ──────────────────────────────── */
+.creature-layer{position:fixed;inset:0;pointer-events:none;z-index:10;overflow:hidden;}
+.critter{position:absolute;left:0;will-change:transform;}
+
+/* Butterfly */
+.bf{top:38%;animation:ltr-wave1 22s linear 12s infinite;}
+/* Bee */
+.bee{top:65%;animation:ltr-bee 13s linear 2s infinite;}
+/* Ladybug */
+.lb{bottom:45px;animation:ltr-crawl 50s linear 8s infinite;}
+/* Snail */
+.snl{bottom:18px;animation:ltr-crawl 84s linear 0s infinite;}
+
+@keyframes ltr-wave1{
+  0%  {transform:translateX(-90px) translateY(0);opacity:0;}
+  4%  {opacity:1;}
+  25% {transform:translateX(25vw)  translateY(-28px);}
+  50% {transform:translateX(50vw)  translateY(20px);}
+  75% {transform:translateX(75vw)  translateY(-24px);}
+  96% {opacity:1;}
+  100%{transform:translateX(calc(100vw+90px)) translateY(0);opacity:0;}
+}
+@keyframes ltr-bee{
+  0%  {transform:translateX(-70px) translateY(0) rotate(0);opacity:0;}
+  5%  {opacity:1;}
+  20% {transform:translateX(20vw)  translateY(-16px) rotate(4deg);}
+  40% {transform:translateX(40vw)  translateY(12px)  rotate(-5deg);}
+  60% {transform:translateX(60vw)  translateY(-18px) rotate(4deg);}
+  80% {transform:translateX(80vw)  translateY(10px)  rotate(-3deg);}
+  95% {opacity:1;}
+  100%{transform:translateX(calc(100vw+70px)) translateY(0) rotate(0);opacity:0;}
+}
+@keyframes ltr-crawl{
+  0%  {transform:translateX(-120px);opacity:0;}
+  4%  {opacity:1;}
+  96% {opacity:1;}
+  100%{transform:translateX(calc(100vw+120px));opacity:0;}
+}
+
+/* Butterfly wing flap — slow, graceful fold */
+.bf-wing-l{
+  transform-box:fill-box;transform-origin:right center;
+  animation:bf-flap-l 0.9s ease-in-out infinite alternate;
+}
+.bf-wing-r{
+  transform-box:fill-box;transform-origin:left center;
+  animation:bf-flap-r 0.9s ease-in-out 0.07s infinite alternate;
+}
+@keyframes bf-flap-l{from{transform:scaleX(1);}to{transform:scaleX(0.18);}}
+@keyframes bf-flap-r{from{transform:scaleX(1);}to{transform:scaleX(0.18);}}
+/* Bee wing vibration — fast buzz */
+.bee-wing-l{
+  transform-box:fill-box;transform-origin:right center;
+  animation:bee-buzz 0.11s ease-in-out infinite alternate;
+}
+.bee-wing-r{
+  transform-box:fill-box;transform-origin:left center;
+  animation:bee-buzz 0.11s ease-in-out 0.04s infinite alternate;
+}
+@keyframes bee-buzz{from{transform:scaleX(1) rotate(-8deg);}to{transform:scaleX(0.10) rotate(4deg);}}
+
+/* ── PAGE HEADER ─────────────────────────────────── */
+.page-header{
+  position:relative;z-index:20;
+  padding:2.8rem 1rem 2.2rem;
+  text-align:center;
+  border-bottom:1.5px solid rgba(90,122,66,0.2);
+  background:rgba(248,243,228,0.82);
+  backdrop-filter:blur(5px);
+}
+.header-vine{
+  font-family:'Lora',serif;font-style:italic;
+  color:rgba(90,122,66,0.5);font-size:0.88rem;
+  letter-spacing:0.3rem;margin-bottom:0.7rem;
+}
+.page-header h1{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:2.6rem;color:var(--sage);font-weight:400;
+  text-shadow:0 1px 3px rgba(255,255,255,0.8);
+  line-height:1.15;
+}
+.page-header p{
+  color:var(--text-dim);font-size:0.8rem;font-weight:300;
+  letter-spacing:0.18em;text-transform:uppercase;margin-top:0.55rem;
+}
+
+/* ── CALENDAR WRAP ───────────────────────────────── */
+.cal-wrap{
+  position:relative;z-index:20;
+  max-width:960px;margin:2rem auto;
+  padding:0 1.25rem 5rem;
+}
+
+/* ── MONTH NAV ───────────────────────────────────── */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.nav-btn{
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:50%;width:46px;height:46px;
+  font-size:1.1rem;cursor:pointer;color:var(--sage);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;box-shadow:0 2px 8px rgba(90,122,66,0.1);
+}
+.nav-btn:hover{background:var(--sage-pale);border-color:var(--sage);transform:scale(1.08);}
+.month-title{text-align:center;}
+.month-title h2{
+  font-family:'IM Fell English',serif;
+  font-size:2.1rem;color:var(--sage);font-weight:400;
+}
+.month-title .year-lbl{color:var(--text-dim);font-size:0.78rem;font-weight:300;letter-spacing:0.14em;margin-top:0.1rem;}
+.month-title .season-lbl{font-size:0.75rem;color:var(--rose);font-style:italic;margin-top:0.1rem;}
+.month-mood{
+  text-align:center;font-family:'Lora',serif;font-style:italic;
+  font-size:0.86rem;color:var(--text-dim);margin-bottom:1.2rem;
+}
+
+/* ── CALENDAR GRID ───────────────────────────────── */
+.calendar-grid{
+  background:rgba(255,254,246,0.94);border-radius:16px;
+  border:1.5px solid var(--border);overflow:hidden;
+  box-shadow:0 4px 28px rgba(90,122,66,0.1),0 1px 4px rgba(0,0,0,0.04);
+}
+.day-headers{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  background:linear-gradient(135deg,#d8e8c0,#e8d8d0);
+  border-bottom:1.5px solid var(--border);
+}
+.day-header{
+  padding:0.8rem 0;text-align:center;
+  font-size:0.68rem;font-weight:700;
+  color:var(--sage);letter-spacing:0.12em;text-transform:uppercase;
+}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.day-cell{
+  border-right:1px solid #e4eeda;border-bottom:1px solid #e4eeda;
+  min-height:90px;padding:0.5rem 0.5rem 0.35rem;
+  transition:background 0.15s;position:relative;
+}
+.day-cell:nth-child(7n){border-right:none;}
+.day-cell.empty{background:rgba(248,243,228,0.5);}
+.day-cell.has-planting{cursor:pointer;}
+.day-cell.has-planting:hover{background:#f2f8ea;}
+.day-cell.today .day-number{
+  background:var(--sage);color:#fff;border-radius:50%;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(90,122,66,0.35);
+}
+.day-number{
+  font-size:0.8rem;font-weight:700;color:var(--text);
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:0.2rem;
+}
+.empty .day-number{color:#c8b898;}
+.planting-dots{display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-more{font-size:0.58rem;color:var(--text-dim);font-weight:700;}
+.frost-tag{
+  font-size:0.54rem;font-weight:700;letter-spacing:0.03em;
+  padding:2px 5px;border-radius:4px;margin-top:4px;
+  display:inline-flex;align-items:center;gap:2px;
+  line-height:1.4;white-space:nowrap;
+}
+.frost-tag-last{background:rgba(80,160,80,0.15);color:#2e7a2e;border:1px solid rgba(80,160,80,0.4);}
+.frost-tag-first{background:rgba(100,160,220,0.15);color:#2a5888;border:1px solid rgba(100,160,220,0.4);}
+.day-cell.frost-last{background:rgba(80,180,80,0.06);}
+.day-cell.frost-first{background:rgba(100,160,220,0.07);}
+
+/* ── POPUP ───────────────────────────────────────── */
+.popup-overlay{
+  position:fixed;inset:0;background:rgba(58,44,30,0.3);
+  backdrop-filter:blur(4px);z-index:200;
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.popup-overlay.visible{display:flex;}
+.popup{
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:20px;padding:2rem 1.75rem 1.75rem;
+  max-width:440px;width:100%;max-height:82vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(58,44,30,0.15),0 2px 8px rgba(0,0,0,0.06);
+  position:relative;animation:popIn 0.2s ease;
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.94) translateY(10px);}to{opacity:1;transform:none;}}
+.popup::before{
+  content:'';position:absolute;top:0;left:22px;right:22px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--sage-light),var(--rose),var(--sage-light),transparent);
+  border-radius:2px;
+}
+.popup-close{
+  position:absolute;top:0.9rem;right:0.9rem;
+  background:var(--sage-pale);border:1px solid var(--border);
+  cursor:pointer;color:var(--sage);font-size:0.8rem;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.popup-close:hover{background:var(--border);}
+.popup-date{font-family:'IM Fell English',serif;font-size:1.55rem;color:var(--sage);margin-bottom:0.2rem;}
+.popup-subtitle{font-size:0.78rem;color:var(--text-dim);font-style:italic;margin-bottom:1.4rem;}
+.popup-category{margin-bottom:1.1rem;}
+.popup-cat-hdr{
+  display:flex;align-items:center;gap:0.45rem;
+  font-size:0.65rem;font-weight:800;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-dim);
+  margin-bottom:0.5rem;padding-bottom:0.35rem;
+  border-bottom:1px solid #e4eeda;
+}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.popup-crop{display:flex;align-items:flex-start;gap:0.6rem;padding:0.32rem 0;}
+.crop-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.crop-name{font-size:0.9rem;font-weight:700;color:var(--text);line-height:1.2;}
+.crop-type{font-size:0.72rem;color:var(--text-dim);font-style:italic;margin-top:0.08rem;}
+
+/* ── LEGEND ──────────────────────────────────────── */
+.legend{
+  display:flex;flex-wrap:wrap;gap:0.55rem 1.1rem;justify-content:center;
+  margin-top:1.4rem;padding:1rem 1.5rem;
+  background:rgba(255,254,246,0.94);border-radius:14px;
+  border:1.5px solid var(--border);
+  box-shadow:0 2px 10px rgba(90,122,66,0.07);
+}
+.legend-title{
+  width:100%;text-align:center;
+  font-family:'Lora',serif;font-size:0.78rem;
+  font-style:italic;color:var(--text-dim);margin-bottom:0.2rem;
+}
+.legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--text-dim);font-weight:600;}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+@media(max-width:620px){
+  .page-header h1{font-size:1.7rem;}
+  .month-title h2{font-size:1.55rem;}
+  .day-cell{min-height:72px;padding:0.35rem 0.28rem;}
+  .dot{width:7px;height:7px;}
+  .corner{display:none;}
+}
+
+/* ── PLANT THIS WEEK ─────────────────────────────── */
+.ptw-card{
+  background:rgba(255,254,246,0.97);border-radius:16px;
+  border:1.5px solid var(--border);
+  box-shadow:0 4px 20px rgba(90,122,66,0.1);
+  padding:1.25rem 1.5rem 1.4rem;
+  margin-bottom:1.75rem;
+  position:relative;overflow:hidden;
+}
+.ptw-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--sage),var(--sage-light),var(--rose),var(--sage-light),var(--sage));
+}
+.ptw-header{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.95rem;}
+.ptw-title{font-family:'IM Fell English',serif;font-size:1.2rem;color:var(--sage);font-weight:400;}
+.ptw-range{font-size:0.71rem;color:var(--text-dim);font-style:italic;margin-left:0.45rem;}
+.ptw-empty{font-size:0.84rem;color:var(--text-dim);font-style:italic;}
+.ptw-cats{display:flex;flex-wrap:wrap;gap:0.6rem;}
+.ptw-cat{
+  background:var(--sage-pale);border-radius:10px;
+  padding:0.65rem 0.9rem;min-width:130px;flex:1;
+}
+.ptw-cat-hdr{
+  display:flex;align-items:center;gap:0.4rem;
+  font-size:0.62rem;font-weight:800;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;
+}
+.ptw-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ptw-crop{font-size:0.8rem;color:var(--text);font-weight:600;line-height:1.65;}
+
+/* ── WEATHER ─────────────────────────────────────── */
+.this-week-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0;align-items:start;}
+.weather-card{
+  background:rgba(255,254,246,0.97);border-radius:16px;
+  border:1.5px solid var(--border);
+  box-shadow:0 4px 20px rgba(90,122,66,0.1);
+  padding:1.25rem 1.5rem 1.4rem;
+  position:relative;overflow:hidden;
+}
+.weather-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#6ab0d8,#a8cce8,#c8b0d8,#a8cce8,#6ab0d8);
+}
+.weather-title{font-family:'IM Fell English',serif;font-size:1.2rem;color:var(--sage);font-weight:400;}
+.weather-loc{font-size:0.71rem;color:var(--text-dim);font-style:italic;margin-left:0.45rem;}
+.wx-days{display:grid;grid-template-columns:repeat(7,1fr);gap:0.4rem;margin-top:0.95rem;}
+.wx-day{
+  background:var(--sage-pale);border-radius:10px;
+  padding:0.6rem 0.3rem;text-align:center;
+}
+.wx-day.wx-today{background:rgba(90,122,66,0.13);border:1px solid rgba(90,122,66,0.28);}
+.wx-name{font-size:0.6rem;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.25rem;}
+.wx-icon{font-size:1.3rem;line-height:1;margin-bottom:0.25rem;}
+.wx-hi{font-size:0.84rem;font-weight:700;color:var(--text);}
+.wx-lo{font-size:0.72rem;color:var(--text-dim);}
+.wx-precip{font-size:0.6rem;color:#4a7aaa;margin-top:0.2rem;font-weight:600;}
+.wx-loading{font-size:0.82rem;color:var(--text-dim);font-style:italic;text-align:center;padding:1.2rem 0;}
+@media(max-width:780px){.this-week-grid{grid-template-columns:1fr;}}
+@media(max-width:620px){.wx-days{gap:0.25rem;}.wx-day{padding:0.5rem 0.2rem;}}
+
+/* ── TIPS SECTION ────────────────────────────────── */
+.tips-wrap{
+  position:relative;z-index:20;
+  max-width:960px;margin:0 auto;padding:0 1.25rem 5rem;
+}
+.tips-heading{
+  font-family:'IM Fell English',serif;font-size:1.65rem;
+  color:var(--sage);font-weight:400;text-align:center;margin-bottom:0.3rem;
+}
+.tips-sub{
+  text-align:center;font-size:0.75rem;color:var(--text-dim);
+  font-style:italic;letter-spacing:0.08em;margin-bottom:1.5rem;
+}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
+.tip-card{
+  background:rgba(255,254,246,0.94);border-radius:14px;
+  border:1.5px solid var(--border);padding:1.25rem 1.3rem;
+  box-shadow:0 2px 12px rgba(90,122,66,0.07);
+}
+.tip-card-hdr{
+  font-family:'Lora',serif;font-size:0.88rem;font-weight:600;
+  color:var(--sage);margin-bottom:0.75rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.tip-card-icon{font-size:1.05rem;}
+.tip-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:0.24rem 0.3rem;border-bottom:1px solid #eef2e6;font-size:0.77rem;
+  border-radius:4px;
+}
+.tip-row:last-child{border-bottom:none;}
+.tip-row-k{font-weight:600;color:var(--text);}
+.tip-row-v{color:var(--text-dim);text-align:right;max-width:55%;}
+.tip-row.now{background:#eef6e4;}
+.tip-row.now .tip-row-k{color:#2e6e2e;font-weight:700;}
+.tip-row.now .tip-row-v{color:#3a8a3a;font-weight:700;}
+.month-tip-text{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:0.84rem;color:var(--text);line-height:1.75;
+}
+</style>
+</head>
+<body>
+
+<!-- ── BOTANICAL CORNERS ─────────────────────────── -->
+<div class="corner corner-tl">
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 80 C25 65 35 40 55 22 C70 8 90 2 110 5" stroke="#8aaa60" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M5 110 C30 95 45 70 60 55 C75 40 95 25 120 18" stroke="#8aaa60" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M5 50 C18 40 28 22 45 12" stroke="#9aba70" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="28" cy="55" rx="16" ry="7" fill="#7aaa50" opacity="0.8" transform="rotate(-40 28 55)"/>
+  <ellipse cx="48" cy="38" rx="14" ry="6" fill="#8aba60" opacity="0.75" transform="rotate(-60 48 38)"/>
+  <ellipse cx="70" cy="22" rx="13" ry="6" fill="#6a9a48" opacity="0.75" transform="rotate(-70 70 22)"/>
+  <ellipse cx="20" cy="80" rx="14" ry="6" fill="#7aaa50" opacity="0.7" transform="rotate(-20 20 80)"/>
+  <ellipse cx="42" cy="68" rx="12" ry="5" fill="#8aba60" opacity="0.7" transform="rotate(25 42 68)"/>
+  <ellipse cx="62" cy="48" rx="11" ry="5" fill="#7aaa50" opacity="0.7" transform="rotate(-50 62 48)"/>
+  <ellipse cx="30" cy="100" rx="13" ry="6" fill="#6a9a48" opacity="0.65" transform="rotate(-15 30 100)"/>
+  <ellipse cx="55" cy="85" rx="11" ry="5" fill="#8aba60" opacity="0.65" transform="rotate(35 55 85)"/>
+  <!-- Flowers -->
+  <circle cx="112" cy="5" r="7" fill="#e8a8b8" opacity="0.85"/>
+  <circle cx="112" cy="5" r="3.5" fill="#f8c8b0" opacity="0.9"/>
+  <circle cx="80" cy="12" r="5.5" fill="#d4a8e0" opacity="0.8"/>
+  <circle cx="80" cy="12" r="2.5" fill="#eac8f0" opacity="0.9"/>
+  <circle cx="122" cy="18" r="4" fill="#e8c8a0" opacity="0.8"/>
+  <circle cx="122" cy="18" r="2" fill="#f8deb8" opacity="0.9"/>
+</svg>
+</div>
+<div class="corner corner-tr">
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 80 C25 65 35 40 55 22 C70 8 90 2 110 5" stroke="#8aaa60" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M5 110 C30 95 45 70 60 55 C75 40 95 25 120 18" stroke="#8aaa60" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="28" cy="55" rx="16" ry="7" fill="#7aaa50" opacity="0.8" transform="rotate(-40 28 55)"/>
+  <ellipse cx="48" cy="38" rx="14" ry="6" fill="#8aba60" opacity="0.75" transform="rotate(-60 48 38)"/>
+  <ellipse cx="70" cy="22" rx="13" ry="6" fill="#6a9a48" opacity="0.75" transform="rotate(-70 70 22)"/>
+  <ellipse cx="20" cy="80" rx="14" ry="6" fill="#7aaa50" opacity="0.7" transform="rotate(-20 20 80)"/>
+  <ellipse cx="42" cy="68" rx="12" ry="5" fill="#8aba60" opacity="0.7" transform="rotate(25 42 68)"/>
+  <ellipse cx="30" cy="100" rx="13" ry="6" fill="#6a9a48" opacity="0.65" transform="rotate(-15 30 100)"/>
+  <circle cx="112" cy="5" r="7" fill="#e8a8b8" opacity="0.85"/>
+  <circle cx="112" cy="5" r="3.5" fill="#f8c8b0" opacity="0.9"/>
+  <circle cx="80" cy="12" r="5.5" fill="#d4a8e0" opacity="0.8"/>
+  <circle cx="80" cy="12" r="2.5" fill="#eac8f0" opacity="0.9"/>
+</svg>
+</div>
+<div class="corner corner-bl">
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 80 C25 65 35 40 55 22 C70 8 90 2 110 5" stroke="#8aaa60" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M5 110 C30 95 45 70 60 55 C75 40 95 25 120 18" stroke="#8aaa60" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="28" cy="55" rx="16" ry="7" fill="#7aaa50" opacity="0.8" transform="rotate(-40 28 55)"/>
+  <ellipse cx="48" cy="38" rx="14" ry="6" fill="#8aba60" opacity="0.75" transform="rotate(-60 48 38)"/>
+  <ellipse cx="20" cy="80" rx="14" ry="6" fill="#7aaa50" opacity="0.7" transform="rotate(-20 20 80)"/>
+  <ellipse cx="55" cy="85" rx="11" ry="5" fill="#8aba60" opacity="0.65" transform="rotate(35 55 85)"/>
+  <circle cx="112" cy="5" r="7" fill="#b8d4a0" opacity="0.85"/>
+  <circle cx="112" cy="5" r="3.5" fill="#d0e8b8" opacity="0.9"/>
+  <circle cx="80" cy="12" r="5.5" fill="#e8c0a0" opacity="0.8"/>
+  <circle cx="80" cy="12" r="2.5" fill="#f8d8b8" opacity="0.9"/>
+</svg>
+</div>
+<div class="corner corner-br">
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 80 C25 65 35 40 55 22 C70 8 90 2 110 5" stroke="#8aaa60" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M5 110 C30 95 45 70 60 55 C75 40 95 25 120 18" stroke="#8aaa60" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="28" cy="55" rx="16" ry="7" fill="#7aaa50" opacity="0.8" transform="rotate(-40 28 55)"/>
+  <ellipse cx="48" cy="38" rx="14" ry="6" fill="#8aba60" opacity="0.75" transform="rotate(-60 48 38)"/>
+  <ellipse cx="70" cy="22" rx="13" ry="6" fill="#6a9a48" opacity="0.75" transform="rotate(-70 70 22)"/>
+  <ellipse cx="20" cy="80" rx="14" ry="6" fill="#7aaa50" opacity="0.7" transform="rotate(-20 20 80)"/>
+  <ellipse cx="30" cy="100" rx="13" ry="6" fill="#6a9a48" opacity="0.65" transform="rotate(-15 30 100)"/>
+  <circle cx="112" cy="5" r="7" fill="#d4c0e8" opacity="0.85"/>
+  <circle cx="112" cy="5" r="3.5" fill="#eadcf8" opacity="0.9"/>
+  <circle cx="80" cy="12" r="5.5" fill="#e8b0a0" opacity="0.8"/>
+  <circle cx="80" cy="12" r="2.5" fill="#f8c8b8" opacity="0.9"/>
+</svg>
+</div>
+
+<!-- ── SPARKLE LAYER ──────────────────────────────── -->
+<div class="sparkle-layer" id="sparkleLayer"></div>
+
+<!-- ── CREATURE LAYER ─────────────────────────────── -->
+<div class="creature-layer">
+
+  <!-- BUTTERFLY — Purple -->
+  <div class="critter bf">
+  <svg width="80" height="66" viewBox="0 0 84 70" xmlns="http://www.w3.org/2000/svg">
+    <!-- LEFT wings -->
+    <g class="bf-wing-l">
+      <!-- Upper left -->
+      <path d="M41 33 C30 20 12 6 2 2 C-1 15 3 30 15 37 C26 42 37 36 41 33Z" fill="#b888e8"/>
+      <path d="M41 33 C28 22 14 11 4 4"    stroke="#7040a8" stroke-width="1.5" fill="none"/>
+      <path d="M41 33 C27 28 12 25 5 28"   stroke="#7040a8" stroke-width="1.1" fill="none"/>
+      <path d="M28 24 C22 18 14 13 8 10"   stroke="#8050b8" stroke-width="0.9" fill="none"/>
+      <path d="M34 28 C28 22 20 16 13 12"  stroke="#8050b8" stroke-width="0.8" fill="none"/>
+      <!-- Pale spots near wing edge -->
+      <circle cx="4"  cy="6"  r="2.0" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="3"  cy="14" r="2.0" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="3"  cy="22" r="1.8" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="7"  cy="30" r="1.6" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="13" cy="36" r="1.5" fill="#f0e8ff" opacity="0.75"/>
+      <!-- Lower left -->
+      <path d="M41 38 C30 44 17 54 7 64 C13 70 28 68 38 58 C42 52 42 44 41 38Z" fill="#c898f0"/>
+      <path d="M41 38 C28 46 17 56 8 64"  stroke="#7040a8" stroke-width="1.2" fill="none"/>
+      <path d="M41 38 C30 48 21 57 15 64" stroke="#8050b8" stroke-width="0.9" fill="none"/>
+      <circle cx="10" cy="66" r="1.8" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="18" cy="69" r="1.7" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="26" cy="69" r="1.6" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="34" cy="65" r="1.4" fill="#f0e8ff" opacity="0.75"/>
+    </g>
+    <!-- RIGHT wings -->
+    <g class="bf-wing-r">
+      <!-- Upper right -->
+      <path d="M43 33 C54 20 72 6 82 2 C85 15 81 30 69 37 C58 42 47 36 43 33Z" fill="#b888e8"/>
+      <path d="M43 33 C56 22 70 11 80 4"    stroke="#7040a8" stroke-width="1.5" fill="none"/>
+      <path d="M43 33 C57 28 72 25 79 28"   stroke="#7040a8" stroke-width="1.1" fill="none"/>
+      <path d="M56 24 C62 18 70 13 76 10"   stroke="#8050b8" stroke-width="0.9" fill="none"/>
+      <path d="M50 28 C56 22 64 16 71 12"   stroke="#8050b8" stroke-width="0.8" fill="none"/>
+      <circle cx="80" cy="6"  r="2.0" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="81" cy="14" r="2.0" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="81" cy="22" r="1.8" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="77" cy="30" r="1.6" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="71" cy="36" r="1.5" fill="#f0e8ff" opacity="0.75"/>
+      <!-- Lower right -->
+      <path d="M43 38 C54 44 67 54 77 64 C71 70 56 68 46 58 C42 52 42 44 43 38Z" fill="#c898f0"/>
+      <path d="M43 38 C56 46 67 56 76 64"  stroke="#7040a8" stroke-width="1.2" fill="none"/>
+      <path d="M43 38 C54 48 63 57 69 64"  stroke="#8050b8" stroke-width="0.9" fill="none"/>
+      <circle cx="74" cy="66" r="1.8" fill="#f0e8ff" opacity="0.85"/>
+      <circle cx="66" cy="69" r="1.7" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="58" cy="69" r="1.6" fill="#f0e8ff" opacity="0.80"/>
+      <circle cx="50" cy="65" r="1.4" fill="#f0e8ff" opacity="0.75"/>
+    </g>
+    <!-- Body -->
+    <ellipse cx="42" cy="36" rx="2.8" ry="14" fill="#5a2090"/>
+    <circle cx="42" cy="27" r="1.1" fill="#f0e8ff"/>
+    <circle cx="42" cy="23" r="1.0" fill="#f0e8ff"/>
+    <!-- Head -->
+    <circle cx="42" cy="21" r="4.5" fill="#5a2090"/>
+    <circle cx="40.5" cy="20" r="1.3" fill="#f0e8ff" opacity="0.85"/>
+    <circle cx="43.5" cy="20" r="1.3" fill="#f0e8ff" opacity="0.85"/>
+    <!-- Antennae -->
+    <path d="M40 17 C36 11 31 6 27 3"  stroke="#5a2090" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M44 17 C48 11 53 6 57 3"  stroke="#5a2090" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="27" cy="3" r="2.2" fill="#5a2090"/>
+    <circle cx="57" cy="3" r="2.2" fill="#5a2090"/>
+  </svg>
+  </div>
+
+  <!-- BEE -->
+  <div class="critter bee">
+  <svg width="52" height="42" viewBox="0 0 62 50" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wings (per-side for realistic buzz) -->
+    <ellipse class="bee-wing-l" cx="18" cy="14" rx="17" ry="8" fill="rgba(200,228,240,0.55)" stroke="#88b8d0" stroke-width="0.9"/>
+    <ellipse class="bee-wing-r" cx="44" cy="14" rx="17" ry="8" fill="rgba(200,228,240,0.55)" stroke="#88b8d0" stroke-width="0.9"/>
+    <!-- Body -->
+    <ellipse cx="31" cy="32" rx="11" ry="15" fill="#e8c030"/>
+    <!-- Stripes -->
+    <path d="M20 28 Q31 26 42 28 Q42 32 31 34 Q20 32 20 28 Z" fill="#3a2010" opacity="0.72"/>
+    <path d="M20 36 Q31 34 42 36 Q42 40 31 42 Q20 40 20 36 Z" fill="#3a2010" opacity="0.65"/>
+    <!-- Head -->
+    <circle cx="31" cy="16" r="8.5" fill="#3a2010"/>
+    <!-- Eyes -->
+    <circle cx="27" cy="14" r="2.5" fill="white"/>
+    <circle cx="35" cy="14" r="2.5" fill="white"/>
+    <circle cx="27" cy="14" r="1.2" fill="#1a0808"/>
+    <circle cx="35" cy="14" r="1.2" fill="#1a0808"/>
+    <!-- Antennae -->
+    <path d="M27 8 C24 4 20 1 17 0" stroke="#3a2010" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <path d="M35 8 C38 4 42 1 45 0" stroke="#3a2010" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="17" cy="0" r="2" fill="#3a2010"/>
+    <circle cx="45" cy="0" r="2" fill="#3a2010"/>
+    <!-- Stinger -->
+    <path d="M31 47 L31 50" stroke="#3a2010" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Legs -->
+    <path d="M21 28 L13 24" stroke="#3a2010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M21 33 L13 33" stroke="#3a2010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M41 28 L49 24" stroke="#3a2010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M41 33 L49 33" stroke="#3a2010" stroke-width="1.1" stroke-linecap="round"/>
+  </svg>
+  </div>
+
+  <!-- LADYBUG -->
+  <div class="critter lb">
+  <svg width="44" height="40" viewBox="0 0 50 46" xmlns="http://www.w3.org/2000/svg">
+    <!-- Body -->
+    <ellipse cx="25" cy="30" rx="19" ry="15" fill="#c83030"/>
+    <!-- Wing line -->
+    <line x1="25" y1="15" x2="25" y2="46" stroke="#2a1010" stroke-width="1.8"/>
+    <!-- Spots -->
+    <circle cx="16" cy="26" r="3.8" fill="#2a1010"/>
+    <circle cx="34" cy="26" r="3.8" fill="#2a1010"/>
+    <circle cx="15" cy="36" r="3.2" fill="#2a1010"/>
+    <circle cx="35" cy="36" r="3.2" fill="#2a1010"/>
+    <!-- Head -->
+    <circle cx="25" cy="14" r="9" fill="#2a1010"/>
+    <!-- Eyes -->
+    <circle cx="21" cy="12" r="2.5" fill="white"/>
+    <circle cx="29" cy="12" r="2.5" fill="white"/>
+    <circle cx="21" cy="12" r="1.2" fill="#0a0404"/>
+    <circle cx="29" cy="12" r="1.2" fill="#0a0404"/>
+    <!-- Antennae -->
+    <path d="M21 6 C18 2 14 0 11 0" stroke="#2a1010" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <path d="M29 6 C32 2 36 0 39 0" stroke="#2a1010" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="11" cy="0" r="2" fill="#2a1010"/>
+    <circle cx="39" cy="0" r="2" fill="#2a1010"/>
+    <!-- Legs -->
+    <path d="M11 27 L5 22" stroke="#2a1010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M11 32 L5 32" stroke="#2a1010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M39 27 L45 22" stroke="#2a1010" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M39 32 L45 32" stroke="#2a1010" stroke-width="1.1" stroke-linecap="round"/>
+  </svg>
+  </div>
+
+  <!-- SNAIL -->
+  <div class="critter snl">
+  <svg width="78" height="54" viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Body / foot -->
+    <ellipse cx="50" cy="50" rx="35" ry="10" fill="#c8a870"/>
+    <!-- Shell (on the left/back) -->
+    <circle cx="30" cy="34" r="22" fill="#b08840"/>
+    <circle cx="30" cy="34" r="16" fill="#c09a50"/>
+    <circle cx="30" cy="34" r="10" fill="#d0aa60"/>
+    <circle cx="30" cy="34" r="5"  fill="#e0ba70"/>
+    <!-- Shell shading -->
+    <path d="M 46 22 A 22 22 0 0 0 10 30" stroke="#906828" stroke-width="1.2" fill="none" opacity="0.45" stroke-linecap="round"/>
+    <!-- Head (on the right, facing right) -->
+    <ellipse cx="70" cy="42" rx="12" ry="10" fill="#c8a870"/>
+    <!-- Eye stalks -->
+    <path d="M74 35 C75 28 76 22 77 17" stroke="#a08050" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M68 35 C67 28 66 22 65 17" stroke="#a08050" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <circle cx="77" cy="16" r="3.5" fill="#5a3820"/>
+    <circle cx="65" cy="16" r="3.5" fill="#5a3820"/>
+    <circle cx="77" cy="15.2" r="1.5" fill="white"/>
+    <circle cx="65" cy="15.2" r="1.5" fill="white"/>
+    <!-- Mouth -->
+    <path d="M74 46 Q70 49 66 46" stroke="#907050" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  </svg>
+  </div>
+
+</div><!-- end creature-layer -->
+
+<!-- ── HEADER ─────────────────────────────────────── -->
+<header class="page-header">
+  <div class="header-vine">~ garden calendar ~</div>
+  <h1>Salt Lake City Garden Calendar</h1>
+  <p>Zone 7b &nbsp;·&nbsp; Fruits · Vegetables · Herbs · Flowers</p>
+</header>
+
+<!-- ── CALENDAR ───────────────────────────────────── -->
+<div class="cal-wrap">
+  <div class="month-nav">
+    <button class="nav-btn" id="prevBtn">&#8592;</button>
+    <div class="month-title">
+      <h2 id="monthName"></h2>
+      <div class="year-lbl" id="yearLbl"></div>
+      <div class="season-lbl" id="seasonLbl"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn">&#8594;</button>
+  </div>
+  <div class="month-mood" id="monthMood"></div>
+  <div class="calendar-grid">
+    <div class="day-headers">
+      <div class="day-header">Sun</div><div class="day-header">Mon</div>
+      <div class="day-header">Tue</div><div class="day-header">Wed</div>
+      <div class="day-header">Thu</div><div class="day-header">Fri</div>
+      <div class="day-header">Sat</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Tap any highlighted day to see what to plant</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5a8f6a"></div>Vegetables</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d45070"></div>Fruits</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9060c0"></div>Flowers</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3aaf8a"></div>Herbs</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c4933f"></div>Bulbs &amp; Garlic</div>
+    <div class="legend-item"><span style="font-size:0.85rem;color:#2e7a2e;line-height:1">❄</span>Last Frost (avg. May 8)</div>
+    <div class="legend-item"><span style="font-size:0.85rem;color:#2a5888;line-height:1">❄</span>First Frost (avg. Oct 12)</div>
+  </div>
+</div>
+
+<!-- ── PLANT THIS WEEK + WEATHER ─────────────────── -->
+<div class="cal-wrap" style="padding-bottom:0;">
+  <div class="this-week-grid">
+
+    <div class="ptw-card">
+      <div class="ptw-header">
+        <span style="font-size:1.35rem">🌱</span>
+        <div>
+          <span class="ptw-title">Plant This Week</span>
+          <span class="ptw-range" id="ptwRange"></span>
+        </div>
+      </div>
+      <div id="ptwCrops"></div>
+    </div>
+
+    <div class="weather-card">
+      <span style="font-size:1.35rem">⛅</span>
+      <span class="weather-title"> Salt Lake City Forecast</span>
+      <span class="weather-loc">7-day · live</span>
+      <div id="wxDays"><div class="wx-loading">Loading forecast…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TIPS & REMINDERS ───────────────────────────── -->
+<div class="tips-wrap">
+  <div class="tips-heading">Garden Tips &amp; Reminders</div>
+  <div class="tips-sub">Salt Lake City · Zone 7b · navigate months above to update tips</div>
+  <div class="tips-grid">
+
+    <div class="tip-card">
+      <div class="tip-card-hdr"><span class="tip-card-icon">📅</span><span id="tipMonthName">This Month</span></div>
+      <div class="month-tip-text" id="monthTipText"></div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-hdr"><span class="tip-card-icon">🌡</span>Min. Soil Temp to Germinate</div>
+      <div class="tip-row"><span class="tip-row-k">Peas · Spinach · Lettuce · Kale</span><span class="tip-row-v">40°F / 4°C</span></div>
+      <div class="tip-row"><span class="tip-row-k">Carrots · Beets · Chard · Onions</span><span class="tip-row-v">50°F / 10°C</span></div>
+      <div class="tip-row"><span class="tip-row-k">Beans · Corn · Cucumbers · Squash</span><span class="tip-row-v">60°F / 16°C</span></div>
+      <div class="tip-row"><span class="tip-row-k">Tomatoes · Peppers · Eggplant</span><span class="tip-row-v">65°F / 18°C</span></div>
+      <div class="tip-row"><span class="tip-row-k">Basil · Melons · Sweet Potatoes</span><span class="tip-row-v">70°F / 21°C</span></div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-hdr"><span class="tip-card-icon">🔄</span>Succession Planting</div>
+      <div class="tip-row"><span class="tip-row-k">Lettuce &amp; Spinach</span><span class="tip-row-v">Every 2 wks · Mar–May, Aug–Sep</span></div>
+      <div class="tip-row"><span class="tip-row-k">Radishes</span><span class="tip-row-v">Every 2 wks · Mar–May, Aug–Sep</span></div>
+      <div class="tip-row"><span class="tip-row-k">Bush Beans</span><span class="tip-row-v">Every 3 wks · May–Aug</span></div>
+      <div class="tip-row"><span class="tip-row-k">Cilantro</span><span class="tip-row-v">Every 3 wks · Mar–May</span></div>
+      <div class="tip-row"><span class="tip-row-k">Dill</span><span class="tip-row-v">Every 3 wks · Apr–Jul</span></div>
+      <div class="tip-row"><span class="tip-row-k">Sweet Corn</span><span class="tip-row-v">Every 2 wks · May–Jul</span></div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-hdr"><span class="tip-card-icon">💧</span>Watering Guide · SLC</div>
+      <div class="tip-row" data-wmonths="2,3"><span class="tip-row-k">Mar – Apr</span><span class="tip-row-v">1× / week</span></div>
+      <div class="tip-row" data-wmonths="4"><span class="tip-row-k">May</span><span class="tip-row-v">1–2× / week</span></div>
+      <div class="tip-row" data-wmonths="5"><span class="tip-row-k">June</span><span class="tip-row-v">2–3× / week</span></div>
+      <div class="tip-row" data-wmonths="6,7"><span class="tip-row-k">Jul – Aug</span><span class="tip-row-v">3–4× / week · mulch!</span></div>
+      <div class="tip-row" data-wmonths="8"><span class="tip-row-k">September</span><span class="tip-row-v">2× / week</span></div>
+      <div class="tip-row" data-wmonths="9"><span class="tip-row-k">October</span><span class="tip-row-v">1× / week</span></div>
+      <div class="tip-row" data-wmonths="10,11,0,1"><span class="tip-row-k">Nov – Feb</span><span class="tip-row-v">Minimal · established only</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── POPUP ──────────────────────────────────────── -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup">
+    <button class="popup-close" id="popupClose">✕</button>
+    <div class="popup-date" id="popupDate"></div>
+    <div class="popup-subtitle" id="popupSubtitle"></div>
+    <div id="popupContent"></div>
+  </div>
+</div>
+
+<script>
+const CROPS=[
+  {id:"tomatoes",    name:"Tomatoes",           category:"vegetable",emoji:"",color:"#e07050",windows:[{type:"Start indoors",start:[2,15],end:[3,15]},{type:"Transplant outdoors",start:[5,1],end:[5,20]}]},
+  {id:"peppers",     name:"Peppers",             category:"vegetable",emoji:"",color:"#d65f3c",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"eggplant",    name:"Eggplant",            category:"vegetable",emoji:"",color:"#7b4e8f",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"cucumbers",   name:"Cucumbers",           category:"vegetable",emoji:"",color:"#3d8a55",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"zucchini",    name:"Zucchini",            category:"vegetable",emoji:"",color:"#5a8f6a",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"squash",      name:"Winter Squash",       category:"vegetable",emoji:"",color:"#c87941",windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
+  {id:"pumpkins",    name:"Pumpkins",            category:"vegetable",emoji:"",color:"#d4782f",windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
+  {id:"beans-bush",  name:"Bush Beans",          category:"vegetable",emoji:"",color:"#6a8f4a",windows:[{type:"Direct sow",start:[5,15],end:[8,1]}]},
+  {id:"beans-pole",  name:"Pole Beans",          category:"vegetable",emoji:"",color:"#5a7f3a",windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
+  {id:"corn",        name:"Sweet Corn",          category:"vegetable",emoji:"",color:"#c8a020",windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
+  {id:"lettuce",     name:"Lettuce",             category:"vegetable",emoji:"",color:"#7ab870",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,1]}]},
+  {id:"spinach",     name:"Spinach",             category:"vegetable",emoji:"",color:"#4f9e6e",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
+  {id:"kale",        name:"Kale",                category:"vegetable",emoji:"",color:"#3d8a5c",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,15]}]},
+  {id:"chard",       name:"Swiss Chard",         category:"vegetable",emoji:"",color:"#5c9e7a",windows:[{type:"Direct sow",start:[4,1],end:[7,1]}]},
+  {id:"broccoli",    name:"Broccoli",            category:"vegetable",emoji:"",color:"#4a7f5a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"cauliflower", name:"Cauliflower",         category:"vegetable",emoji:"",color:"#8f9e7a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"cabbage",     name:"Cabbage",             category:"vegetable",emoji:"",color:"#6a8a5a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,30]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"peas",        name:"Peas",                category:"vegetable",emoji:"",color:"#7ab860",windows:[{type:"Direct sow",start:[3,15],end:[4,30]}]},
+  {id:"radishes",    name:"Radishes",            category:"vegetable",emoji:"",color:"#d4607a",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,30]}]},
+  {id:"carrots",     name:"Carrots",             category:"vegetable",emoji:"",color:"#e07030",windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
+  {id:"beets",       name:"Beets",               category:"vegetable",emoji:"",color:"#b04070",windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
+  {id:"onions",      name:"Onions",              category:"vegetable",emoji:"",color:"#c4a050",windows:[{type:"Transplant",start:[3,15],end:[4,30]}]},
+  {id:"potatoes",    name:"Potatoes",            category:"vegetable",emoji:"",color:"#9a7a50",windows:[{type:"Plant seed potatoes",start:[4,1],end:[5,15]}]},
+  {id:"sweet-pots",  name:"Sweet Potatoes",      category:"vegetable",emoji:"",color:"#c07040",windows:[{type:"Transplant slips",start:[6,1],end:[6,15]}]},
+  {id:"garlic",      name:"Garlic",              category:"bulb",     emoji:"",color:"#c4933f",windows:[{type:"Plant cloves (fall)",start:[10,1],end:[11,15]}]},
+  {id:"strawberries",name:"Strawberries",        category:"fruit",    emoji:"",color:"#d45070",windows:[{type:"Plant crowns",start:[3,15],end:[4,30]}]},
+  {id:"raspberries", name:"Raspberries",         category:"fruit",    emoji:"",color:"#c04080",windows:[{type:"Plant bareroot canes",start:[3,1],end:[4,15]}]},
+  {id:"melons",      name:"Cantaloupe & Melons", category:"fruit",    emoji:"",color:"#c4b040",windows:[{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"basil",       name:"Basil",               category:"herb",     emoji:"",color:"#3aaf8a",windows:[{type:"Transplant outdoors",start:[5,15],end:[6,15]}]},
+  {id:"parsley",     name:"Parsley",             category:"herb",     emoji:"",color:"#2a9f7a",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Transplant",start:[5,1],end:[6,1]}]},
+  {id:"cilantro",    name:"Cilantro",            category:"herb",     emoji:"",color:"#4aaf6a",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
+  {id:"chives",      name:"Chives",              category:"herb",     emoji:"",color:"#3a9f70",windows:[{type:"Direct sow",start:[3,15],end:[5,1]}]},
+  {id:"dill",        name:"Dill",                category:"herb",     emoji:"",color:"#5aaf5a",windows:[{type:"Direct sow",start:[4,1],end:[7,15]}]},
+  {id:"mint",        name:"Mint",                category:"herb",     emoji:"",color:"#2aaf8a",windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
+  {id:"thyme",       name:"Thyme",               category:"herb",     emoji:"",color:"#4a9f8a",windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
+  {id:"marigolds",   name:"Marigolds",           category:"flower",   emoji:"",color:"#d4902a",windows:[{type:"Start indoors",start:[3,1],end:[3,15]},{type:"Direct sow / Transplant",start:[5,1],end:[6,1]}]},
+  {id:"sunflowers",  name:"Sunflowers",          category:"flower",   emoji:"",color:"#c8a020",windows:[{type:"Direct sow",start:[5,1],end:[7,1]}]},
+  {id:"nasturtiums", name:"Nasturtiums",         category:"flower",   emoji:"",color:"#d07040",windows:[{type:"Direct sow",start:[5,1],end:[6,1]}]},
+  {id:"sweet-peas",  name:"Sweet Peas",          category:"flower",   emoji:"",color:"#b060a0",windows:[{type:"Direct sow (cool-season)",start:[3,1],end:[4,15]}]},
+  {id:"cosmos",      name:"Cosmos",              category:"flower",   emoji:"",color:"#c06090",windows:[{type:"Direct sow",start:[5,1],end:[6,15]}]},
+  {id:"zinnias",     name:"Zinnias",             category:"flower",   emoji:"",color:"#d05870",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"lavender",    name:"Lavender",            category:"flower",   emoji:"",color:"#8060b0",windows:[{type:"Transplant",start:[4,15],end:[5,15]}]},
+  {id:"chamomile",   name:"Chamomile",           category:"flower",   emoji:"",color:"#b09830",windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
+  {id:"borage",      name:"Borage",              category:"flower",   emoji:"",color:"#3860b0",windows:[{type:"Direct sow (companion)",start:[4,15],end:[6,1]}]},
+  {id:"calendula",   name:"Calendula",           category:"flower",   emoji:"",color:"#d08028",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,1],end:[9,1]}]},
+  {id:"snapdragons", name:"Snapdragons",         category:"flower",   emoji:"",color:"#c05880",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[3,15],end:[4,30]}]},
+  {id:"pansies",     name:"Pansies",             category:"flower",   emoji:"",color:"#8050b0",windows:[{type:"Transplant",start:[3,1],end:[4,15]},{type:"Transplant (fall)",start:[9,1],end:[9,30]}]},
+  {id:"alyssum",     name:"Sweet Alyssum",       category:"flower",   emoji:"",color:"#9070c0",windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
+];
+
+const CATS={
+  vegetable:{label:"Vegetables",   color:"#5a8f6a"},
+  fruit:    {label:"Fruits",       color:"#d45070"},
+  flower:   {label:"Flowers",      color:"#9060c0"},
+  herb:     {label:"Herbs",        color:"#3aaf8a"},
+  bulb:     {label:"Bulbs & Garlic",color:"#c4933f"},
+};
+const CAT_ORDER=["vegetable","fruit","herb","flower","bulb"];
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const SEASONS=["❄ Deep Winter","❄ Late Winter","✿ Early Spring","✿ Spring","✿ Late Spring","☀ Summer","☀ High Summer","☀ Late Summer","✦ Early Fall","✦ Fall","❄ Late Fall","❄ Winter"];
+const MOODS=[
+  "The garden sleeps — dream, plan, and order seeds",
+  "Time to start brassicas, snapdragons & onions indoors",
+  "First seeds go in the ground — cool-season crops & sweet peas",
+  "Spring arrives — peas, greens, strawberries & transplants",
+  "After last frost — the garden bursts into full life",
+  "High summer — warm-season crops flourish",
+  "Peak season — beans, corn & last succession sowings",
+  "Second spring — start fall brassicas & cool-season crops",
+  "Harvest & wind-down — last plantings before frost",
+  "Garlic goes in the ground — winter is coming",
+  "Garlic settles in — rest and restore the soil",
+  "Deep winter — rest, reflect, dream of next spring",
+];
+
+const today=new Date();
+let currentMonth=today.getMonth();
+
+function toOrd(m1,d){return Math.floor((new Date(2001,m1-1,d)-new Date(2001,0,1))/86400000);}
+function inWin(m1,d,w){const o=toOrd(m1,d);return o>=toOrd(w.start[0],w.start[1])&&o<=toOrd(w.end[0],w.end[1]);}
+function cropsForDay(m1,d){
+  const hits=[];
+  for(const crop of CROPS){for(const w of crop.windows){if(inWin(m1,d,w)){hits.push({crop,type:w.type});break;}}}
+  return hits;
+}
+
+function render(){
+  const yr=today.getFullYear(),m0=currentMonth;
+  document.getElementById("monthName").textContent=MONTHS[m0];
+  document.getElementById("yearLbl").textContent=yr;
+  document.getElementById("seasonLbl").textContent=SEASONS[m0];
+  document.getElementById("monthMood").textContent=MOODS[m0];
+  const days=new Date(yr,m0+1,0).getDate();
+  const first=new Date(yr,m0,1).getDay();
+  const isNow=m0===today.getMonth()&&yr===today.getFullYear();
+  const grid=document.getElementById("daysGrid");
+  grid.innerHTML="";
+  for(let i=0;i<first;i++){
+    const b=document.createElement("div");b.className="day-cell empty";
+    const n=document.createElement("div");n.className="day-number";b.appendChild(n);grid.appendChild(b);
+  }
+  for(let d=1;d<=days;d++){
+    const cell=document.createElement("div");cell.className="day-cell";
+    if(isNow&&d===today.getDate())cell.classList.add("today");
+    const num=document.createElement("div");num.className="day-number";num.textContent=d;cell.appendChild(num);
+    if((m0+1)===5&&d===8){
+      cell.classList.add("frost-last");
+      const tag=document.createElement("div");tag.className="frost-tag frost-tag-last";
+      tag.textContent="❄ Last Frost";cell.appendChild(tag);
+    }
+    if((m0+1)===10&&d===12){
+      cell.classList.add("frost-first");
+      const tag=document.createElement("div");tag.className="frost-tag frost-tag-first";
+      tag.textContent="❄ First Frost";cell.appendChild(tag);
+    }
+    const hits=cropsForDay(m0+1,d);
+    if(hits.length){
+      cell.classList.add("has-planting");
+      const wrap=document.createElement("div");wrap.className="planting-dots";
+      const cats=new Set(hits.map(({crop})=>crop.category));
+      CAT_ORDER.filter(c=>cats.has(c)).forEach(c=>{
+        const dot=document.createElement("div");dot.className="dot";
+        dot.style.background=CATS[c].color;wrap.appendChild(dot);
+      });
+      cell.appendChild(wrap);
+      cell.addEventListener("click",()=>showPopup(m0+1,d,hits));
+    }
+    grid.appendChild(cell);
+  }
+  renderTips(m0);
+}
+
+function showPopup(m1,d,hits){
+  document.getElementById("popupDate").textContent=`${MONTHS[m1-1]} ${d}`;
+  document.getElementById("popupSubtitle").textContent=`${hits.length} thing${hits.length!==1?"s":""} to plant today`;
+  const grp={};
+  hits.forEach(({crop,type})=>{(grp[crop.category]??=[]).push({crop,type});});
+  let html="";
+  for(const cat of CAT_ORDER){
+    if(!grp[cat])continue;
+    const ci=CATS[cat];
+    html+=`<div class="popup-category"><div class="popup-cat-hdr"><div class="cat-dot" style="background:${ci.color}"></div>${ci.label}</div>`;
+    grp[cat].forEach(({crop,type})=>{
+      html+=`<div class="popup-crop"><div class="crop-dot" style="background:${crop.color}"></div><div><div class="crop-name">${crop.name}</div><div class="crop-type">${type}</div></div></div>`;
+    });
+    html+=`</div>`;
+  }
+  document.getElementById("popupContent").innerHTML=html;
+  document.getElementById("popupOverlay").classList.add("visible");
+}
+
+function closePopup(){document.getElementById("popupOverlay").classList.remove("visible");}
+
+document.getElementById("prevBtn").addEventListener("click",()=>{currentMonth=(currentMonth+11)%12;render();});
+document.getElementById("nextBtn").addEventListener("click",()=>{currentMonth=(currentMonth+1)%12;render();});
+document.getElementById("popupClose").addEventListener("click",closePopup);
+document.getElementById("popupOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closePopup();});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape")closePopup();
+  if(e.key==="ArrowLeft"){currentMonth=(currentMonth+11)%12;render();}
+  if(e.key==="ArrowRight"){currentMonth=(currentMonth+1)%12;render();}
+});
+
+// Soft sparkles
+const SP=["✦","✧","·","•","✿","*"];
+const SC=["#8aaa60","#c07880","#9a7838","#b090d0","rgba(90,122,66,0.6)"];
+function spawnSp(){
+  const el=document.createElement("div");el.className="sp";
+  el.textContent=SP[Math.floor(Math.random()*SP.length)];
+  el.style.left=Math.random()*95+"vw";
+  el.style.top=Math.random()*88+"vh";
+  el.style.fontSize=(0.6+Math.random()*0.7)+"rem";
+  el.style.color=SC[Math.floor(Math.random()*SC.length)];
+  document.getElementById("sparkleLayer").appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+setInterval(spawnSp,900);
+spawnSp();spawnSp();
+
+const MONTHS_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+const MONTHLY_TIPS=[
+  "Order seed catalogs and plan your layout. Start onion and leek seeds indoors mid-month — they need the longest lead time of any vegetable.",
+  "Start broccoli, cauliflower, cabbage, and snapdragons indoors. Begin hardening off onion seedlings with a few hours outside each day.",
+  "Direct sow peas, spinach, and lettuce as soon as soil reaches 40°F. Transplant brassica starts outside under row cover if nights dip below 28°F.",
+  "Direct sow carrots, beets, and radishes. Transplant broccoli, cabbage, and cauliflower outside. Watch for late frosts — keep row cover handy.",
+  "Last frost is around May 8. Wait until after to transplant tomatoes, peppers, and basil. Harden off all warm-season starts for 7–10 days first.",
+  "Water deeply 2–3× per week as heat builds. Watch zucchini closely for squash vine borers. Succession sow beans every 3 weeks for a continuous harvest.",
+  "SLC summer heat is intense — mulch 2–3\" deep to conserve moisture and cool roots. Water 3–4× per week. Start fall brassicas indoors late in the month.",
+  "Start fall crops now: direct sow kale, spinach, lettuce, and radishes. Transplant fall broccoli and cabbage starts. Days are getting shorter — act quickly.",
+  "First frost coming around Oct 12. Harvest winter squash and green tomatoes before frost hits. Cover tender crops on cold nights with a frost cloth.",
+  "First frost ~Oct 12. Plant garlic cloves 2\" deep before the ground freezes — it will overwinter and be ready next July. Bring in remaining green tomatoes.",
+  "Clean up spent crops and add 2–3\" of compost to beds. Mulch garlic beds after the ground starts to freeze to protect bulbs through winter.",
+  "Rest and reflect. Browse seed catalogs, plan next year's crop rotation, and order seeds early — popular varieties sell out fast by February.",
+];
+
+
+function wxIcon(c){
+  if(c===0)return"☀️";
+  if(c<=2)return"🌤";
+  if(c===3)return"☁️";
+  if(c<=48)return"🌫";
+  if(c<=55)return"🌦";
+  if(c<=65)return"🌧";
+  if(c<=77)return"🌨";
+  if(c<=82)return"🌦";
+  if(c<=86)return"🌨";
+  return"⛈";
+}
+
+async function fetchWeather(){
+  const container=document.getElementById("wxDays");
+  try{
+    const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=40.7608&longitude=-111.8910&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&temperature_unit=fahrenheit&timezone=America%2FDenver&forecast_days=7`);
+    const data=await res.json();
+    const DAY=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    const grid=document.createElement("div");grid.className="wx-days";
+    data.daily.time.forEach((dateStr,i)=>{
+      const d=new Date(dateStr+"T12:00:00");
+      const hi=Math.round(data.daily.temperature_2m_max[i]);
+      const lo=Math.round(data.daily.temperature_2m_min[i]);
+      const precip=data.daily.precipitation_probability_max[i];
+      const card=document.createElement("div");
+      card.className="wx-day"+(i===0?" wx-today":"");
+      card.innerHTML=`<div class="wx-name">${i===0?"Today":DAY[d.getDay()]}</div><div class="wx-icon">${wxIcon(data.daily.weathercode[i])}</div><div class="wx-hi">${hi}°</div><div class="wx-lo">${lo}°</div>${precip>15?`<div class="wx-precip">💧${precip}%</div>`:""}`;
+      grid.appendChild(card);
+    });
+    container.innerHTML="";container.appendChild(grid);
+  }catch(e){
+    container.innerHTML=`<div class="wx-loading">Forecast unavailable.</div>`;
+  }
+}
+
+function renderPTW(){
+  const now=new Date();
+  const end=new Date(now);end.setDate(now.getDate()+6);
+  const fmt=d=>`${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById("ptwRange").textContent=`${fmt(now)} – ${fmt(end)}`;
+  const seen=new Set();const byCat={};
+  for(let i=0;i<=6;i++){
+    const d=new Date(now);d.setDate(now.getDate()+i);
+    cropsForDay(d.getMonth()+1,d.getDate()).forEach(({crop})=>{
+      if(!seen.has(crop.id)){seen.add(crop.id);(byCat[crop.category]??=[]).push(crop);}
+    });
+  }
+  const wrap=document.getElementById("ptwCrops");wrap.innerHTML="";
+  const cats=CAT_ORDER.filter(c=>byCat[c]);
+  if(!cats.length){wrap.innerHTML=`<div class="ptw-empty">Nothing to plant this week — enjoy the rest!</div>`;return;}
+  const grid=document.createElement("div");grid.className="ptw-cats";
+  cats.forEach(c=>{
+    const ci=CATS[c];
+    const card=document.createElement("div");card.className="ptw-cat";
+    card.innerHTML=`<div class="ptw-cat-hdr"><div class="ptw-cat-dot" style="background:${ci.color}"></div>${ci.label}</div>`;
+    byCat[c].forEach(crop=>{const n=document.createElement("div");n.className="ptw-crop";n.textContent=crop.name;card.appendChild(n);});
+    grid.appendChild(card);
+  });
+  wrap.appendChild(grid);
+}
+
+function renderTips(m0){
+  document.getElementById("tipMonthName").textContent=MONTHS[m0];
+  document.getElementById("monthTipText").textContent=MONTHLY_TIPS[m0];
+  document.querySelectorAll(".tip-row[data-wmonths]").forEach(row=>{
+    const ms=row.dataset.wmonths.split(",").map(Number);
+    row.classList.toggle("now",ms.includes(m0));
+  });
+}
+
+render();
+renderPTW();
+fetchWeather();
+</script>
+</body>
+</html>
