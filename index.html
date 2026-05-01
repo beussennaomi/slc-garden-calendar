@@ -266,6 +266,7 @@ body::before{
 .crop-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
 .crop-name{font-size:0.9rem;font-weight:700;color:var(--text);line-height:1.2;}
 .crop-type{font-size:0.72rem;color:var(--text-dim);font-style:italic;margin-top:0.08rem;}
+.crop-sun{font-size:0.7rem;color:var(--text-dim);margin-top:0.15rem;}
 
 /* ── LEGEND ──────────────────────────────────────── */
 .legend{
@@ -748,54 +749,54 @@ body::before{
 
 <script>
 const CROPS=[
-  {id:"tomatoes",    name:"Tomatoes",           category:"vegetable",emoji:"",color:"#e07050",windows:[{type:"Start indoors",start:[2,15],end:[3,15]},{type:"Transplant outdoors",start:[5,1],end:[5,20]}]},
-  {id:"peppers",     name:"Peppers",             category:"vegetable",emoji:"",color:"#d65f3c",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
-  {id:"eggplant",    name:"Eggplant",            category:"vegetable",emoji:"",color:"#7b4e8f",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
-  {id:"cucumbers",   name:"Cucumbers",           category:"vegetable",emoji:"",color:"#3d8a55",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
-  {id:"zucchini",    name:"Zucchini",            category:"vegetable",emoji:"",color:"#5a8f6a",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
-  {id:"squash",      name:"Winter Squash",       category:"vegetable",emoji:"",color:"#c87941",windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
-  {id:"pumpkins",    name:"Pumpkins",            category:"vegetable",emoji:"",color:"#d4782f",windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
-  {id:"beans-bush",  name:"Bush Beans",          category:"vegetable",emoji:"",color:"#6a8f4a",windows:[{type:"Direct sow",start:[5,15],end:[8,1]}]},
-  {id:"beans-pole",  name:"Pole Beans",          category:"vegetable",emoji:"",color:"#5a7f3a",windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
-  {id:"corn",        name:"Sweet Corn",          category:"vegetable",emoji:"",color:"#c8a020",windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
-  {id:"lettuce",     name:"Lettuce",             category:"vegetable",emoji:"",color:"#7ab870",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,1]}]},
-  {id:"spinach",     name:"Spinach",             category:"vegetable",emoji:"",color:"#4f9e6e",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
-  {id:"kale",        name:"Kale",                category:"vegetable",emoji:"",color:"#3d8a5c",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,15]}]},
-  {id:"chard",       name:"Swiss Chard",         category:"vegetable",emoji:"",color:"#5c9e7a",windows:[{type:"Direct sow",start:[4,1],end:[7,1]}]},
-  {id:"broccoli",    name:"Broccoli",            category:"vegetable",emoji:"",color:"#4a7f5a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
-  {id:"cauliflower", name:"Cauliflower",         category:"vegetable",emoji:"",color:"#8f9e7a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
-  {id:"cabbage",     name:"Cabbage",             category:"vegetable",emoji:"",color:"#6a8a5a",windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,30]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
-  {id:"peas",        name:"Peas",                category:"vegetable",emoji:"",color:"#7ab860",windows:[{type:"Direct sow",start:[3,15],end:[4,30]}]},
-  {id:"radishes",    name:"Radishes",            category:"vegetable",emoji:"",color:"#d4607a",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,30]}]},
-  {id:"carrots",     name:"Carrots",             category:"vegetable",emoji:"",color:"#e07030",windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
-  {id:"beets",       name:"Beets",               category:"vegetable",emoji:"",color:"#b04070",windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
-  {id:"onions",      name:"Onions",              category:"vegetable",emoji:"",color:"#c4a050",windows:[{type:"Transplant",start:[3,15],end:[4,30]}]},
-  {id:"potatoes",    name:"Potatoes",            category:"vegetable",emoji:"",color:"#9a7a50",windows:[{type:"Plant seed potatoes",start:[4,1],end:[5,15]}]},
-  {id:"sweet-pots",  name:"Sweet Potatoes",      category:"vegetable",emoji:"",color:"#c07040",windows:[{type:"Transplant slips",start:[6,1],end:[6,15]}]},
-  {id:"garlic",      name:"Garlic",              category:"bulb",     emoji:"",color:"#c4933f",windows:[{type:"Plant cloves (fall)",start:[10,1],end:[11,15]}]},
-  {id:"strawberries",name:"Strawberries",        category:"fruit",    emoji:"",color:"#d45070",windows:[{type:"Plant crowns",start:[3,15],end:[4,30]}]},
-  {id:"raspberries", name:"Raspberries",         category:"fruit",    emoji:"",color:"#c04080",windows:[{type:"Plant bareroot canes",start:[3,1],end:[4,15]}]},
-  {id:"melons",      name:"Cantaloupe & Melons", category:"fruit",    emoji:"",color:"#c4b040",windows:[{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
-  {id:"basil",       name:"Basil",               category:"herb",     emoji:"",color:"#3aaf8a",windows:[{type:"Transplant outdoors",start:[5,15],end:[6,15]}]},
-  {id:"parsley",     name:"Parsley",             category:"herb",     emoji:"",color:"#2a9f7a",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Transplant",start:[5,1],end:[6,1]}]},
-  {id:"cilantro",    name:"Cilantro",            category:"herb",     emoji:"",color:"#4aaf6a",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
-  {id:"chives",      name:"Chives",              category:"herb",     emoji:"",color:"#3a9f70",windows:[{type:"Direct sow",start:[3,15],end:[5,1]}]},
-  {id:"dill",        name:"Dill",                category:"herb",     emoji:"",color:"#5aaf5a",windows:[{type:"Direct sow",start:[4,1],end:[7,15]}]},
-  {id:"mint",        name:"Mint",                category:"herb",     emoji:"",color:"#2aaf8a",windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
-  {id:"thyme",       name:"Thyme",               category:"herb",     emoji:"",color:"#4a9f8a",windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
-  {id:"marigolds",   name:"Marigolds",           category:"flower",   emoji:"",color:"#d4902a",windows:[{type:"Start indoors",start:[3,1],end:[3,15]},{type:"Direct sow / Transplant",start:[5,1],end:[6,1]}]},
-  {id:"sunflowers",  name:"Sunflowers",          category:"flower",   emoji:"",color:"#c8a020",windows:[{type:"Direct sow",start:[5,1],end:[7,1]}]},
-  {id:"nasturtiums", name:"Nasturtiums",         category:"flower",   emoji:"",color:"#d07040",windows:[{type:"Direct sow",start:[5,1],end:[6,1]}]},
-  {id:"sweet-peas",  name:"Sweet Peas",          category:"flower",   emoji:"",color:"#b060a0",windows:[{type:"Direct sow (cool-season)",start:[3,1],end:[4,15]}]},
-  {id:"cosmos",      name:"Cosmos",              category:"flower",   emoji:"",color:"#c06090",windows:[{type:"Direct sow",start:[5,1],end:[6,15]}]},
-  {id:"zinnias",     name:"Zinnias",             category:"flower",   emoji:"",color:"#d05870",windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
-  {id:"lavender",    name:"Lavender",            category:"flower",   emoji:"",color:"#8060b0",windows:[{type:"Transplant",start:[4,15],end:[5,15]}]},
-  {id:"chamomile",   name:"Chamomile",           category:"flower",   emoji:"",color:"#b09830",windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
-  {id:"borage",      name:"Borage",              category:"flower",   emoji:"",color:"#3860b0",windows:[{type:"Direct sow (companion)",start:[4,15],end:[6,1]}]},
-  {id:"calendula",   name:"Calendula",           category:"flower",   emoji:"",color:"#d08028",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,1],end:[9,1]}]},
-  {id:"snapdragons", name:"Snapdragons",         category:"flower",   emoji:"",color:"#c05880",windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[3,15],end:[4,30]}]},
-  {id:"pansies",     name:"Pansies",             category:"flower",   emoji:"",color:"#8050b0",windows:[{type:"Transplant",start:[3,1],end:[4,15]},{type:"Transplant (fall)",start:[9,1],end:[9,30]}]},
-  {id:"alyssum",     name:"Sweet Alyssum",       category:"flower",   emoji:"",color:"#9070c0",windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
+  {id:"tomatoes",    name:"Tomatoes",           category:"vegetable",emoji:"",color:"#e07050",sun:"full",   windows:[{type:"Start indoors",start:[2,15],end:[3,15]},{type:"Transplant outdoors",start:[5,1],end:[5,20]}]},
+  {id:"peppers",     name:"Peppers",             category:"vegetable",emoji:"",color:"#d65f3c",sun:"full",   windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"eggplant",    name:"Eggplant",            category:"vegetable",emoji:"",color:"#7b4e8f",sun:"full",   windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"cucumbers",   name:"Cucumbers",           category:"vegetable",emoji:"",color:"#3d8a55",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"zucchini",    name:"Zucchini",            category:"vegetable",emoji:"",color:"#5a8f6a",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"squash",      name:"Winter Squash",       category:"vegetable",emoji:"",color:"#c87941",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
+  {id:"pumpkins",    name:"Pumpkins",            category:"vegetable",emoji:"",color:"#d4782f",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[6,1]}]},
+  {id:"beans-bush",  name:"Bush Beans",          category:"vegetable",emoji:"",color:"#6a8f4a",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[8,1]}]},
+  {id:"beans-pole",  name:"Pole Beans",          category:"vegetable",emoji:"",color:"#5a7f3a",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
+  {id:"corn",        name:"Sweet Corn",          category:"vegetable",emoji:"",color:"#c8a020",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[7,15]}]},
+  {id:"lettuce",     name:"Lettuce",             category:"vegetable",emoji:"",color:"#7ab870",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,1]}]},
+  {id:"spinach",     name:"Spinach",             category:"vegetable",emoji:"",color:"#4f9e6e",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
+  {id:"kale",        name:"Kale",                category:"vegetable",emoji:"",color:"#3d8a5c",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,15]}]},
+  {id:"chard",       name:"Swiss Chard",         category:"vegetable",emoji:"",color:"#5c9e7a",sun:"partial",windows:[{type:"Direct sow",start:[4,1],end:[7,1]}]},
+  {id:"broccoli",    name:"Broccoli",            category:"vegetable",emoji:"",color:"#4a7f5a",sun:"full",   windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"cauliflower", name:"Cauliflower",         category:"vegetable",emoji:"",color:"#8f9e7a",sun:"full",   windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,15]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"cabbage",     name:"Cabbage",             category:"vegetable",emoji:"",color:"#6a8a5a",sun:"full",   windows:[{type:"Start indoors",start:[1,15],end:[2,15]},{type:"Transplant outdoors",start:[3,15],end:[4,30]},{type:"Start indoors (fall)",start:[6,15],end:[7,1]},{type:"Transplant outdoors (fall)",start:[7,15],end:[8,1]}]},
+  {id:"peas",        name:"Peas",                category:"vegetable",emoji:"",color:"#7ab860",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[4,30]}]},
+  {id:"radishes",    name:"Radishes",            category:"vegetable",emoji:"",color:"#d4607a",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,15]},{type:"Direct sow (fall)",start:[8,1],end:[9,30]}]},
+  {id:"carrots",     name:"Carrots",             category:"vegetable",emoji:"",color:"#e07030",sun:"full",   windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
+  {id:"beets",       name:"Beets",               category:"vegetable",emoji:"",color:"#b04070",sun:"full",   windows:[{type:"Direct sow",start:[4,1],end:[6,1]},{type:"Direct sow (fall)",start:[7,15],end:[8,15]}]},
+  {id:"onions",      name:"Onions",              category:"vegetable",emoji:"",color:"#c4a050",sun:"full",   windows:[{type:"Transplant",start:[3,15],end:[4,30]}]},
+  {id:"potatoes",    name:"Potatoes",            category:"vegetable",emoji:"",color:"#9a7a50",sun:"full",   windows:[{type:"Plant seed potatoes",start:[4,1],end:[5,15]}]},
+  {id:"sweet-pots",  name:"Sweet Potatoes",      category:"vegetable",emoji:"",color:"#c07040",sun:"full",   windows:[{type:"Transplant slips",start:[6,1],end:[6,15]}]},
+  {id:"garlic",      name:"Garlic",              category:"bulb",     emoji:"",color:"#c4933f",sun:"full",   windows:[{type:"Plant cloves (fall)",start:[10,1],end:[11,15]}]},
+  {id:"strawberries",name:"Strawberries",        category:"fruit",    emoji:"",color:"#d45070",sun:"full",   windows:[{type:"Plant crowns",start:[3,15],end:[4,30]}]},
+  {id:"raspberries", name:"Raspberries",         category:"fruit",    emoji:"",color:"#c04080",sun:"partial",windows:[{type:"Plant bareroot canes",start:[3,1],end:[4,15]}]},
+  {id:"melons",      name:"Cantaloupe & Melons", category:"fruit",    emoji:"",color:"#c4b040",sun:"full",   windows:[{type:"Transplant outdoors",start:[5,15],end:[6,1]}]},
+  {id:"basil",       name:"Basil",               category:"herb",     emoji:"",color:"#3aaf8a",sun:"full",   windows:[{type:"Transplant outdoors",start:[5,15],end:[6,15]}]},
+  {id:"parsley",     name:"Parsley",             category:"herb",     emoji:"",color:"#2a9f7a",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Transplant",start:[5,1],end:[6,1]}]},
+  {id:"cilantro",    name:"Cilantro",            category:"herb",     emoji:"",color:"#4aaf6a",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,15],end:[9,15]}]},
+  {id:"chives",      name:"Chives",              category:"herb",     emoji:"",color:"#3a9f70",sun:"partial",windows:[{type:"Direct sow",start:[3,15],end:[5,1]}]},
+  {id:"dill",        name:"Dill",                category:"herb",     emoji:"",color:"#5aaf5a",sun:"full",   windows:[{type:"Direct sow",start:[4,1],end:[7,15]}]},
+  {id:"mint",        name:"Mint",                category:"herb",     emoji:"",color:"#2aaf8a",sun:"partial",windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
+  {id:"thyme",       name:"Thyme",               category:"herb",     emoji:"",color:"#4a9f8a",sun:"full",   windows:[{type:"Transplant",start:[4,15],end:[6,1]}]},
+  {id:"marigolds",   name:"Marigolds",           category:"flower",   emoji:"",color:"#d4902a",sun:"full",   windows:[{type:"Start indoors",start:[3,1],end:[3,15]},{type:"Direct sow / Transplant",start:[5,1],end:[6,1]}]},
+  {id:"sunflowers",  name:"Sunflowers",          category:"flower",   emoji:"",color:"#c8a020",sun:"full",   windows:[{type:"Direct sow",start:[5,1],end:[7,1]}]},
+  {id:"nasturtiums", name:"Nasturtiums",         category:"flower",   emoji:"",color:"#d07040",sun:"full",   windows:[{type:"Direct sow",start:[5,1],end:[6,1]}]},
+  {id:"sweet-peas",  name:"Sweet Peas",          category:"flower",   emoji:"",color:"#b060a0",sun:"full",   windows:[{type:"Direct sow (cool-season)",start:[3,1],end:[4,15]}]},
+  {id:"cosmos",      name:"Cosmos",              category:"flower",   emoji:"",color:"#c06090",sun:"full",   windows:[{type:"Direct sow",start:[5,1],end:[6,15]}]},
+  {id:"zinnias",     name:"Zinnias",             category:"flower",   emoji:"",color:"#d05870",sun:"full",   windows:[{type:"Direct sow",start:[5,15],end:[6,15]}]},
+  {id:"lavender",    name:"Lavender",            category:"flower",   emoji:"",color:"#8060b0",sun:"full",   windows:[{type:"Transplant",start:[4,15],end:[5,15]}]},
+  {id:"chamomile",   name:"Chamomile",           category:"flower",   emoji:"",color:"#b09830",sun:"full",   windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
+  {id:"borage",      name:"Borage",              category:"flower",   emoji:"",color:"#3860b0",sun:"full",   windows:[{type:"Direct sow (companion)",start:[4,15],end:[6,1]}]},
+  {id:"calendula",   name:"Calendula",           category:"flower",   emoji:"",color:"#d08028",sun:"full",   windows:[{type:"Direct sow",start:[3,15],end:[5,1]},{type:"Direct sow (fall)",start:[8,1],end:[9,1]}]},
+  {id:"snapdragons", name:"Snapdragons",         category:"flower",   emoji:"",color:"#c05880",sun:"full",   windows:[{type:"Start indoors",start:[2,1],end:[3,1]},{type:"Transplant outdoors",start:[3,15],end:[4,30]}]},
+  {id:"pansies",     name:"Pansies",             category:"flower",   emoji:"",color:"#8050b0",sun:"partial",windows:[{type:"Transplant",start:[3,1],end:[4,15]},{type:"Transplant (fall)",start:[9,1],end:[9,30]}]},
+  {id:"alyssum",     name:"Sweet Alyssum",       category:"flower",   emoji:"",color:"#9070c0",sun:"full",   windows:[{type:"Direct sow",start:[4,1],end:[5,15]}]},
 ];
 
 const CATS={
@@ -884,6 +885,7 @@ function showPopup(m1,d,hits){
   document.getElementById("popupDate").textContent=`${MONTHS[m1-1]} ${d}`;
   document.getElementById("popupSubtitle").textContent=`${hits.length} thing${hits.length!==1?"s":""} to plant today`;
   const grp={};
+  const SUN_LABEL={full:"☀ Full sun (6+ hrs/day)",partial:"⛅ Partial sun (3–6 hrs/day)"};
   hits.forEach(({crop,type})=>{(grp[crop.category]??=[]).push({crop,type});});
   let html="";
   for(const cat of CAT_ORDER){
@@ -891,7 +893,8 @@ function showPopup(m1,d,hits){
     const ci=CATS[cat];
     html+=`<div class="popup-category"><div class="popup-cat-hdr"><div class="cat-dot" style="background:${ci.color}"></div>${ci.label}</div>`;
     grp[cat].forEach(({crop,type})=>{
-      html+=`<div class="popup-crop"><div class="crop-dot" style="background:${crop.color}"></div><div><div class="crop-name">${crop.name}</div><div class="crop-type">${type}</div></div></div>`;
+      const sunLabel=SUN_LABEL[crop.sun]??"";
+      html+=`<div class="popup-crop"><div class="crop-dot" style="background:${crop.color}"></div><div><div class="crop-name">${crop.name}</div><div class="crop-type">${type}</div>${sunLabel?`<div class="crop-sun">${sunLabel}</div>`:""}</div></div>`;
     });
     html+=`</div>`;
   }
